@@ -107,7 +107,7 @@ exports.signIn = function (fields, callback) {
             })
             // TODO: send email about successfully authorisation with IP address, user-agent, 
             // datetime and other important information if user email notifications is enabled
-            // doc.sendEmail('security')
+            doc.sendEmail('security', function(){})
           }
         })
       }
@@ -159,7 +159,7 @@ exports.signUp = function (fields, callback) {
               },
               token: doc.getToken(fields.useragent)
             })
-            doc.sendEmail('welcome')
+            doc.sendEmail('welcome', function(){})
           }
         })
       }

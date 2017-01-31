@@ -40,22 +40,28 @@ exports.sendEmail = function(type, callback) {
     // send confirmation mail
     case 'welcome':
       callback()
-      break;
+      break
 
     // resend confirmation mail
     case 'resend':
       callback()
-      break;
+      break
 
     // reset password
     case 'reset':
       callback()
-      break;
+      break
 
     // letter about succesfully changed password
     case 'password':
       callback()
-      break;
+      break
+
+    // send email about successfully authorisation with IP address, user-agent, 
+    // datetime and other important information if user email notifications is enabled
+    case 'security':
+      callback()
+      break
 
     // by default
     default:
