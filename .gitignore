@@ -38,3 +38,6 @@ jspm_packages
 
 # some local git configurations
 git.config.sh
+
+# Environment variables
+env.json
