@@ -4,7 +4,7 @@ This is the RESTful API Service. It's base example include token authorisation a
 
 ### Getting started
 
-0. To store user accounts we use `mongodb`.
+0. To store user accounts and other information i use `mongodb`. If you want you can use local `mongodb` server or you can use free plan for example from [mlab](http://mlab.com/). How to create database on mlab see [docs](http://docs.mlab.com/)
 
 1. Make project directory and initialise npm project
 
@@ -20,69 +20,43 @@ npm init
 npm install --save bcrypt body-parser express jsonwebtoken mongoose mongoose-timestamp
 ```
 
-3. Make some directories and create `index.js` file
+3. You can clone this project and skep 1 and 2 steps by
 
 ```
-mkdir controllers models routes
-touch index.js
+git clone git@github.com:simdo/rest.api.git
 ```
 
-4. Put the following code into `index.js`
+or [download](https://github.com/simdo/rest.api/archive/master.zip) source project files
 
-```js
-// import packages that we need
-var express     = require('express');
-var bodyParser  = require('body-parser');
-var mongoose    = require('mongoose');
-
-// import out api routes
-var users       = require('./routes/users'); 
-var items       = require('./routes/items');
-
-// define app using express.js
-var app         = express();
-
-// [Use native promises for backwards compatibility. Mongoose 4 returns mpromise promises by default.](http://mongoosejs.com/docs/promises.html)
-mongoose.Promise = global.Promise;
-
-// connect to local mongodb by default if it not specified in env
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/restapi');
-
-// get mongoose connection instance
-var dbi = mongoose.connection;
-dbi.on('error', console.error.bind(console, 'Connection error:'));
-dbi.once('open', function() {
-  console.log('Connected to Database!');
-});
-
-// parse application/json
-app.use(bodyParser.json());
-
-// parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }));
-
-// set 8080 port as default if it not specified in env
-app.set('port', process.env.PORT || 8080);
-
-// register api routes
-app.use('/', users);
-app.use('/', items);
-
-// start our rest api server
-var server = app.listen(app.get('port'), function() {
-  console.log('RESTful API server listening on port ' + server.address().port);
-});
-
-// prevent too long threshold
-server.timeout = 2048;
+4. Create environment file `env.json` on the root project folder
 
 ```
+touch env.json
+```
 
-5. 5
-6. 6
-7. 7
+5. Put the following code into `env.json`
 
-### Installations
+```json
+{
+  "api"         : {
+    "version"   : "v1.0"
+  },
+  "port"        : 3000,
+  "host"        : "localhost",
+  "environment" : "development",
+  "mongodb"     : "mongodb://user:password@id.mlab.com:port/dbname",
+  "secret"      : "Some super sercet string for JSON Web token",
+  "from_email"  : "robot@project.domain.name"
+}
+```
+
+6. Start project
+
+```
+node index.js
+```
+
+7. Use for example [Postman](https://www.getpostman.com/) for test you Restful API server
 
 ### Change Log
 
