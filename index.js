@@ -55,7 +55,7 @@ app.disable('x-powered-by')
 // mongodb readyState flag: 0 = disconnected, 1 = connected, 2 = connecting,
 // 3 = disconnecting
 app.use(function (req, res, next) {
-  if (mongoose.connection.readyState != 1) {
+  if (db.readyState != 1) {
     var err = new Error('Database connection problem')
     err.status = 500
     next(err)
