@@ -1,6 +1,6 @@
-const {Router} = require('express')
-const controller = require('../controllers/user')
-const app = Router()
+const {Router}    = require('express')
+const controller  = require('../controllers/user')
+const app         = Router()
 
 app.route('/')
   .get(controller.list)

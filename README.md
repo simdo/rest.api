@@ -15,7 +15,7 @@ npm init
 
 * Install base node packages
 ```
-npm install --save bcrypt body-parser express jsonwebtoken mongoose mongoose-timestamp
+npm install --save bcrypt body-parser express jsonwebtoken mongoose mongoose-timestamp postmark
 ```
 
 * You can clone this project and skep 1 and 2 steps by
@@ -40,6 +40,7 @@ touch env.json
   "environment" : "development",
   "mongodb"     : "mongodb://user:password@id.mlab.com:port/dbname",
   "secret"      : "Some super sercet string for JSON Web token",
+  "postmark"    : "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
   "from_email"  : "robot@project.domain.name"
 }
 ```

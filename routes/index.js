@@ -1,12 +1,11 @@
-// import packages that we need
-var express = require('express');
-
-// get an instance of the express Router
-var router	= express.Router();
+const {Router}    = require('express')
+const product     = require('../env.json').product
+const version     = require('../package.json').version
+const app         = Router()
 
 /* get home url */
-router.get('/', function(req, res, next) {
-  res.json({ message: 'RESTful API Service' });
-});
+app.get('/', function(req, res, next) {
+  res.status(200).json({ message: product + ' ' + version })
+})
 
-module.exports = router;
+module.exports = app
