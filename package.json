@@ -1,12 +1,22 @@
 {
   "name": "rest.api",
   "version": "0.0.1",
-  "description": "This is the RESTful API Service. It's base example include token authorisation and sample of CRUD (create, read, update, delete) operations.",
+  "description": "Node.js RESTful API Server. It's base example include token authorisation and sample of CRUD (create, read, update, delete) operations.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/simdo/rest.api.git"
+  },
+  "keywords": [
+    "RESTful API Server"
+  ],
+  "bugs": {
+    "url": "https://github.com/simdo/rest.api/issues"
+  },
   "license": "MIT",
   "dependencies": {
     "bcrypt": "^1.0.2",
@@ -14,6 +24,7 @@
     "express": "^4.14.0",
     "jsonwebtoken": "^7.2.1",
     "mongoose": "^4.7.8",
-    "mongoose-timestamp": "^0.6.0"
+    "mongoose-timestamp": "^0.6.0",
+    "postmark": "^1.3.1"
   }
 }
