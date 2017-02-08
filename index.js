@@ -1,7 +1,7 @@
 // import packages that we need
 const express    = require('express')
 const bodyParser = require('body-parser')
-const mongoose   = require('mongoose')
+const mongoose   = require('./middleware/mongoose')
 
 // import our api routes
 const index      = require('./routes/index')
@@ -13,56 +13,12 @@ const env         = require('./env.json')
 // define app
 var app         = express()
 
-// [Use native promises for backwards compatibility. Mongoose 4 returns mpromise promises by default.](http://mongoosejs.com/docs/promises.html)
-mongoose.Promise = Promise
-
-// create reusable mongo connect func
-var mongoConnect = function() {
-  mongoose.connect(env.mongodb || 'mongodb://localhost/restapi', { server: { auto_reconnect: true } })
-}
-
-// get mongoose connection instance
-var db = mongoose.connection
-db.once('open', function() {
-  console.log('MongoDB connection opened!')
-})
-db.on('connected', () => {
-  console.info('Connected to MongoDB!')
-})
-db.on('reconnected', function () {
-  console.log('MongoDB reconnected!')
-})
-db.on('error', function(error) {
-  console.error('Error in MongoDb connection: ' + error)
-  mongoose.disconnect()
-})
-db.on('reconnected', function () {
-  console.log('MongoDB reconnected!')
-})
-db.on('disconnected', function() {
-  console.log('MongoDB disconnected!')
-  setTimeout(mongoConnect, 10000)
-})
-
-// connect to local mongodb by default if it not specified in env
-mongoConnect()
-
 // remove x-powered-by header variable
 app.disable('x-powered-by')
 // ? app.disable('etag');
 
-// This function is executed every time the app receives a request and check
-// mongodb readyState flag: 0 = disconnected, 1 = connected, 2 = connecting,
-// 3 = disconnecting
-app.use(function (req, res, next) {
-  if (db.readyState != 1) {
-    var err = new Error('Database connection problem')
-    err.status = 500
-    next(err)
-  }
-  else
-    next()
-})
+// 
+app.use(mongoose.checkState)
 
 // parse application/json
 app.use(bodyParser.json())
