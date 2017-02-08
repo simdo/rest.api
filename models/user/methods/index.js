@@ -1,6 +1,7 @@
 const bcrypt    = require('bcrypt')
 const jwt       = require('jsonwebtoken')
-const jwtSecret = require('../../../env.json').secret
+const env       = require('../../../env.json')
+const postmark  = require('postmark')
 
 /**
  * Check current password
@@ -24,7 +25,7 @@ exports.getToken = function(useragent) {
   return jwt.sign({
     _id: this._id.toString(),
     useragent: useragent
-  }, jwtSecret, {
+  }, env.secret, {
     expiresIn: 7*24*60*60 // expires in 24 hours
   })
 }
@@ -34,37 +35,52 @@ exports.getToken = function(useragent) {
  *
  * @param {Function} callback
  */
-exports.sendEmail = function(type, callback) {
+exports.sendEmail = function(doc, type, callback) {
+  var options = {
+    From: env.from_email,
+    To: doc.email || env.to_email,
+    TemplateModel: {
+      support_email : doc.email,
+      product_name  : env.product,
+      company_name  : env.company
+    }
+  }
   switch (type) {
 
-    // send confirmation mail
+    // send confirmation welcome mail
     case 'welcome':
-      callback()
-      break
-
-    // resend confirmation mail
+    // resend confirmation welcome mail
     case 'resend':
-      callback()
+      options.TemplateId = env.postmark.welcome
+      options.TemplateModel.action_url = env.hosts.app + '/confirm/' + doc.verifyToken + '/'
+      options.TemplateModel.login_url  = env.hosts.app + '/signin/'
+      options.TemplateModel.username   = doc.email
       break
 
     // reset password
     case 'reset':
-      callback()
+      options.TemplateId = env.postmark.reset
+      options.TemplateModel = {
+        action_url    : env.hosts.app + '/reset/' + doc.verifyToken + '/',
+      }
       break
 
     // letter about succesfully changed password
     case 'password':
-      callback()
+      options.TemplateId = env.postmark.password
       break
 
     // send email about successfully authorisation with IP address, user-agent, 
     // datetime and other important information if user email notifications is enabled
     case 'security':
-      callback()
+      options.TemplateId = env.postmark.security
       break
 
     // by default
     default:
-      callback('Invalid sendmail type')
+      return callback('Invalid sendmail type')
   }
+  // postmark client send with templates see https://github.com/wildbit/postmark.js
+  const client = new postmark.Client(env.postmark.secret)
+  client.sendEmailWithTemplate(options, callback)
 }

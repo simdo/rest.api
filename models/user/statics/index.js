@@ -1,3 +1,4 @@
+const crypto      = require('crypto')
 const {ObjectId}  = require('mongoose').Types
 
 /**
@@ -107,7 +108,7 @@ exports.signIn = function (fields, callback) {
             })
             // TODO: send email about successfully authorisation with IP address, user-agent, 
             // datetime and other important information if user email notifications is enabled
-            doc.sendEmail('security', function(){})
+            doc.sendEmail(doc, 'security', function(err) {})
           }
         })
       }
@@ -142,25 +143,36 @@ exports.signUp = function (fields, callback) {
       else if (doc)
         callback({ message: 'Email address is already in use' })
       else {
-        self.create({
-          email: fields.email.toLowerCase(),
-          phone: fields.phone,
-          password: fields.password,
-        }, (err, doc) => {
-          if (err)
+        crypto.randomBytes(24, (err, buf) => {
+          if (err) // throw err
             callback(err)
-          else if (! doc)
-            callback({ error: '' })
-          else {
-            callback(null, {
-              user: {
-                name: doc.name,
-                role: doc.role
-              },
-              token: doc.getToken(fields.useragent)
+          else
+            self.create({
+              email               : fields.email.toLowerCase(),
+              phone               : fields.phone,
+              password            : fields.password,
+              verifyToken         : buf.toString('hex'),
+              verifyTokenExpires  : Date.now() + 3600000 * 24 // 24 hours
+            }, (err, doc) => {
+              if (err)
+                callback(err)
+              else if (! doc)
+                callback({ error: '' })
+              else {
+                doc.sendEmail(doc, 'welcome', function(err) {
+                  if (err) // throw err
+                    callback(err)
+                  else
+                    callback(null, {
+                      user: {
+                        name: doc.name,
+                        role: doc.role
+                      },
+                      token: doc.getToken(fields.useragent)
+                    })
+                })
+              }
             })
-            doc.sendEmail('welcome', function(){})
-          }
         })
       }
     })
@@ -230,7 +242,7 @@ exports.confirmationEmail = function (id, resend, callback) {
       else if (! doc)
         callback({ message: 'User not found' })
       else {
-        doc.sendEmail(resend ? 'resend' : 'welcome', function(err) {
+        doc.sendEmail(doc, resend ? 'resend' : 'welcome', function(err) {
           if (err)
             callback(err)
           else
@@ -265,7 +277,7 @@ exports.confirmationReset = function (email, callback) {
       else if (! doc)
         callback({ message: 'User not found' })
       else {
-        doc.sendEmail('reset', function(err) {
+        doc.sendEmail(doc, 'reset', function(err) {
           if (err)
             callback(err)
           else
@@ -310,6 +322,7 @@ exports.changePassword = function (id, fields, callback) {
             doc.password = fields.password
             doc.save(callback)
             // TODO: send email about successfully changed password like gmail letters...
+            doc.sendEmail(doc, 'password', function(err) {})
           }
         })
       }
