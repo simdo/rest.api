@@ -32,16 +32,28 @@ touch env.json
 * Put the following code into `env.json`
 ```json
 {
+  "product"     : "RESTful API Service",
+  "company"     : "Company Name, LLC",
   "api"         : {
     "version"   : "v1.0"
   },
   "port"        : 3000,
-  "host"        : "localhost",
+  "hosts"       : {
+    "api"       : "api.domain.name",
+    "app"       : "app.domain.name"
+  },
   "environment" : "development",
   "mongodb"     : "mongodb://user:password@id.mlab.com:port/dbname",
   "secret"      : "Some super sercet string for JSON Web token",
-  "postmark"    : "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
-  "from_email"  : "robot@project.domain.name"
+  "postmark"    : {
+    "secret"    : "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
+    "welcome"   : 1272561,
+    "reset"     : 1272761,
+    "password"  : 1279242,
+    "security"  : 1279241
+  },
+  "from_email"  : "Service Robot <robot@domain.name>",
+  "to_email"    : "support@domain.name"
 }
 ```
 
