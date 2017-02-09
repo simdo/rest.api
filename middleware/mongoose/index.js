@@ -3,10 +3,11 @@ const url       = require('../../env.json').mongodb
 
 // Reusable mongoose connect function
 const mongooseConnect = function() {
-  mongoose.connect(url || 'mongodb://localhost/restapi', { server: { auto_reconnect: true } })
+  mongoose.connect(url, { server: { auto_reconnect: true } })
 }
 
-// [Use native promises for backwards compatibility. Mongoose 4 returns mpromise promises by default.](http://mongoosejs.com/docs/promises.html)
+// [Use native promises for backwards compatibility. Mongoose 4 returns mpromise
+// promises by default.](http://mongoosejs.com/docs/promises.html)
 mongoose.Promise = Promise
 
 // Mongoose auto_reconnect flag for true doesn't work when we get error then we need seft reconnect
@@ -23,7 +24,10 @@ mongooseConnect()
 
 /**
  *  This function is executed every time the app receives a request and check
- *  mongodb readyState flag: 0 = disconnected, 1 = connected, 2 = connecting,
+ *  mongodb readyState flag: 
+ *  0 = disconnected
+ *  1 = connected
+ *  2 = connecting
  *  3 = disconnecting
  *
  *  @method
